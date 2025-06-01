@@ -16,6 +16,7 @@ export interface MovieResponse {
     results: Movie[];
     total_pages: number;
     total_results: number;
+    page: number;
 }
 
 export interface Genre {
@@ -50,18 +51,34 @@ export const getMovieDetails = async (movieId: number): Promise<MovieDetails> =>
     return data;
 };
 
-// export const searchMovies = async (query: string, page: number = 1): Promise<MovieResponse> => {
-//     const { data } = await axiosInstance.get("/search/movie", {
-//         params: { query, page },
-//     });
-//     return data;
-// };
+export const searchMovies = async (query: string, page: number = 1): Promise<MovieResponse> => {
+    const { data } = await axiosInstance.get("/search/movie", {
+        params: { query, page },
+    });
+    return data;
+};
 
-// export const useSearchMovies = (query: string, page: number = 1) => {
-//     return useQuery({
-//         queryKey: ["searchMovies", query, page],
-//         queryFn: () => searchMovies(query, page),
-//         enabled: !!query,
-//         retry: false,
-//     });
-// }; 
+export const getGenres = async (): Promise<{ genres: Genre[] }> => {
+    const { data } = await axiosInstance.get("/genre/movie/list");
+    return data;
+};
+
+export const getMoviesByGenre = async (genreId: number, page: number = 1): Promise<MovieResponse> => {
+    const { data } = await axiosInstance.get("/discover/movie", {
+        params: { 
+            with_genres: genreId,
+            page,
+            sort_by: "popularity.desc"
+        },
+    });
+    return data;
+};
+
+export const useSearchMovies = (query: string, page: number = 1) => {
+    return useQuery({
+        queryKey: ["searchMovies", query, page],
+        queryFn: () => searchMovies(query, page),
+        enabled: !!query,
+        retry: false,
+    });
+}; 
