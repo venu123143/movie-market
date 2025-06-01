@@ -24,10 +24,23 @@ export interface Genre {
     name: string;
 }
 
+export interface ProductionCompany {
+    id: number;
+    logo_path: string | null;
+    name: string;
+    origin_country: string;
+}
+
 export interface MovieDetails extends Movie {
     tagline: string;
     genres: Genre[];
     runtime: number;
+    status: string;
+    budget: number;
+    revenue: number;
+    original_language: string;
+    backdrop_path: string;
+    production_companies: ProductionCompany[];
 }
 
 const axiosInstance = axios.create({
@@ -70,6 +83,13 @@ export const getMoviesByGenre = async (genreId: number, page: number = 1): Promi
             page,
             sort_by: "popularity.desc"
         },
+    });
+    return data;
+};
+
+export const getSimilarMovies = async (movieId: number, page: number = 1): Promise<MovieResponse> => {
+    const { data } = await axiosInstance.get(`/movie/${movieId}/similar`, {
+        params: { page },
     });
     return data;
 };

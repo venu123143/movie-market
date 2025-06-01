@@ -1,12 +1,14 @@
 import { useState, useMemo } from "react";
-import { usePopularMovies, useSearchMovies, useMoviesByGenre } from "@/hooks/useMovies";
-import { SearchBar } from "@/components/SearchBar";
+import { usePopularMovies, useMoviesByGenre } from "@/hooks/useMovies";
+import { useMovieStore } from "@/store/movieStore";
+
 import { GenreFilter } from "@/components/GenreFilter";
 import { MovieGrid } from "@/components/MovieGrid";
 
 const Home = () => {
-    const [searchQuery, setSearchQuery] = useState("");
+
     const [selectedGenre, setSelectedGenre] = useState<number | null>(null);
+    const { searchQuery } = useMovieStore();
 
     const {
         data: popularData,
@@ -16,13 +18,7 @@ const Home = () => {
         isLoading: isLoadingPopular,
     } = usePopularMovies(!searchQuery && !selectedGenre);
 
-    const {
-        data: searchData,
-        fetchNextPage: fetchNextSearch,
-        hasNextPage: hasNextSearch,
-        isFetchingNextPage: isFetchingNextSearch,
-        isLoading: isLoadingSearch,
-    } = useSearchMovies(searchQuery);
+
 
     const {
         data: genreData,
@@ -33,15 +29,6 @@ const Home = () => {
     } = useMoviesByGenre(selectedGenre);
 
     const { movies, fetchNextPage, hasNextPage, isFetchingNextPage } = useMemo(() => {
-        if (searchQuery) {
-            return {
-                movies: searchData?.pages.flatMap((page) => page.results) ?? [],
-                fetchNextPage: fetchNextSearch,
-                hasNextPage: hasNextSearch,
-                isFetchingNextPage: isFetchingNextSearch,
-            };
-        }
-
         if (selectedGenre) {
             return {
                 movies: genreData?.pages.flatMap((page) => page.results) ?? [],
@@ -57,9 +44,9 @@ const Home = () => {
             hasNextPage: hasNextPopular,
             isFetchingNextPage: isFetchingNextPopular,
         };
-    }, [searchQuery, selectedGenre, popularData, searchData, genreData]);
+    }, [selectedGenre, popularData, genreData]);
 
-    const isLoading = isLoadingPopular || isLoadingSearch || isLoadingGenre;
+    const isLoading = isLoadingPopular || isLoadingGenre;
 
     if (isLoading) {
         return <div className="p-4">Loading...</div>;
@@ -69,23 +56,12 @@ const Home = () => {
         <div className="p-4 space-y-6">
             <div className="flex flex-col space-y-4">
                 <h1 className="text-2xl font-bold">
-                    {searchQuery
-                        ? `Search Results for "${searchQuery}"`
-                        : selectedGenre
-                        ? "Movies by Genre"
-                        : "Popular Movies"}
+                    {selectedGenre ? "Movies by Genre" : "Popular Movies"}
                 </h1>
                 <div className="flex flex-col md:flex-row gap-4">
-                    <SearchBar
-                        onSearch={setSearchQuery}
-                        className="md:w-96"
-                    />
                     <GenreFilter
                         selectedGenre={selectedGenre}
-                        onSelectGenre={(genreId) => {
-                            setSelectedGenre(genreId);
-                            setSearchQuery("");
-                        }}
+                        onSelectGenre={setSelectedGenre}
                     />
                 </div>
             </div>

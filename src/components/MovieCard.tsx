@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Card } from "@/components/ui/card";
 import { useMovieDetails } from "@/hooks/useMovies";
 import type { Movie } from "@/services/api";
@@ -10,6 +11,7 @@ interface MovieCardProps {
 }
 
 export const MovieCard = ({ movie }: MovieCardProps) => {
+    const navigate = useNavigate();
     const [isHovered, setIsHovered] = useState(false);
     const { data: movieDetails, isLoading: loadingDetails } = useMovieDetails(isHovered ? movie.id : null);
 
@@ -21,6 +23,7 @@ export const MovieCard = ({ movie }: MovieCardProps) => {
         >
             <Card
                 className="flex flex-col items-center border border-gray-200 bg-white rounded-lg shadow-sm hover:shadow-xl transition-shadow duration-200 p-2 cursor-pointer"
+                onClick={() => navigate(`/movie/${movie.id}`)}
             >
                 <img
                     src={movie.poster_path ? `${IMAGE_BASE_URL}${movie.poster_path}` : "/placeholder.jpg"}
@@ -42,18 +45,18 @@ export const MovieCard = ({ movie }: MovieCardProps) => {
                 </div>
             </Card>
             {isHovered && (
-                <div className="absolute z-20 top-0 left-0 w-full h-full bg-white/95 border border-yellow-400 rounded-lg shadow-2xl p-3 flex flex-col items-start animate-fade-in">
+                <div className="absolute z-20 top-0 left-0 w-full h-full bg-white/95 border border-yellow-400 rounded-lg shadow-2xl p-3 overflow-y-auto animate-fade-in cursor-pointer" onClick={() => navigate(`/movie/${movie.id}`)}>
                     {loadingDetails ? (
                         <div className="w-full text-center text-xs text-gray-500">Loading details...</div>
                     ) : movieDetails ? (
                         <>
-                            <h3 className="text-base font-bold mb-1">{movieDetails.title}</h3>
+                            <h3 className="text-base font-bold mb-1 truncate" title={movieDetails.title}>{movieDetails.title}</h3>
                             {movieDetails.tagline && (
                                 <div className="italic text-xs text-gray-500 mb-1">"{movieDetails.tagline}"</div>
                             )}
                             <div className="text-xs mb-1">
                                 <span className="font-semibold">Genres: </span>
-                                {movieDetails.genres?.map((g) => g.name).join(", ") || "N/A"}
+                                <span className="truncate">{movieDetails.genres?.map((g) => g.name).join(", ") || "N/A"}</span>
                             </div>
                             <div className="text-xs mb-1">
                                 <span className="font-semibold">Runtime: </span>
@@ -61,7 +64,7 @@ export const MovieCard = ({ movie }: MovieCardProps) => {
                             </div>
                             <div className="text-xs mb-1">
                                 <span className="font-semibold">Overview: </span>
-                                {movieDetails.overview}
+                                <span className="line-clamp-4">{movieDetails.overview}</span>
                             </div>
                         </>
                     ) : (

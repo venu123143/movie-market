@@ -1,5 +1,5 @@
 import { useQuery, useInfiniteQuery } from "@tanstack/react-query";
-import { getPopularMovies, getMovieDetails, searchMovies, getGenres, getMoviesByGenre } from "@/services/api";
+import { getPopularMovies, getMovieDetails, searchMovies, getGenres, getMoviesByGenre, getSimilarMovies } from "@/services/api";
 import type { MovieDetails, MovieResponse } from "@/services/api";
 
 export const usePopularMovies = (enabled: boolean = true) => {
@@ -51,6 +51,19 @@ export const useMoviesByGenre = (genreId: number | null) => {
         getNextPageParam: (lastPage) =>
             lastPage.page < lastPage.total_pages ? lastPage.page + 1 : undefined,
         enabled: true,
+        retry: false,
+        initialPageParam: 1
+    });
+};
+
+export const useSimilarMovies = (movieId: number | null) => {
+    return useInfiniteQuery<MovieResponse>({
+        queryKey: ["similarMovies", movieId],
+        queryFn: ({ pageParam = 1 }) =>
+            movieId ? getSimilarMovies(movieId, pageParam as number) : Promise.reject("No movie ID"),
+        getNextPageParam: (lastPage) =>
+            lastPage.page < lastPage.total_pages ? lastPage.page + 1 : undefined,
+        enabled: !!movieId,
         retry: false,
         initialPageParam: 1
     });
