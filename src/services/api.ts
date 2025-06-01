@@ -50,18 +50,18 @@ export const getMovieDetails = async (movieId: number): Promise<MovieDetails> =>
     return data;
 };
 
-export const searchMovies = async (query: string, page: number = 1): Promise<MovieResponse> => {
-    const { data } = await axiosInstance.get("/search/movie", {
-        params: { query, page },
-    });
-    return data;
-};
+// export const searchMovies = async (query: string, page: number = 1): Promise<MovieResponse> => {
+//     const { data } = await axiosInstance.get("/search/movie", {
+//         params: { query, page },
+//     });
+//     return data;
+// };
 
-export const useSearchMovies = (query: string, page: number = 1) => {
-    return useQuery({
-        queryKey: ["searchMovies", query, page],
-        queryFn: () => searchMovies(query, page),
-        enabled: !!query,
-        retry: false,
-    });
-}; 
+// export const useSearchMovies = (query: string, page: number = 1) => {
+//     return useQuery({
+//         queryKey: ["searchMovies", query, page],
+//         queryFn: () => searchMovies(query, page),
+//         enabled: !!query,
+//         retry: false,
+//     });
+// }; 
