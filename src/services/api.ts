@@ -1,5 +1,4 @@
 import axios from "axios";
-import { useQuery } from "@tanstack/react-query";
 
 const API_KEY = import.meta.env.VITE_TMDB_API_KEY;
 const BASE_URL = "https://api.themoviedb.org/3";
@@ -64,6 +63,73 @@ export const getMovieDetails = async (movieId: number): Promise<MovieDetails> =>
     return data;
 };
 
+export interface RatedMovie extends Movie {
+    rating: number;
+}
+
+export interface RatedTV {
+    id: number;
+    name: string;
+    overview: string;
+    poster_path: string;
+    rating: number;
+    first_air_date: string;
+    vote_average: number;
+}
+
+export interface RatedTVEpisode {
+    id: number;
+    name: string;
+    overview: string;
+    still_path: string;
+    rating: number;
+    air_date: string;
+    episode_number: number;
+    season_number: number;
+    show_id: number;
+    show_name: string;
+}
+
+export interface RatedResponse<T> {
+    page: number;
+    results: T[];
+    total_pages: number;
+    total_results: number;
+}
+
+export const getRatedMovies = async (page: number = 1): Promise<RatedResponse<RatedMovie>> => {
+    const { data } = await axiosInstance.get(`/account/16272812/rated/movies`, {
+        params: { 
+            page,
+            language: 'en-US',
+            sort_by: 'created_at.asc'
+        }
+    });
+    return data;
+};
+
+export const getRatedTVShows = async (page: number = 1): Promise<RatedResponse<RatedTV>> => {
+    const { data } = await axiosInstance.get(`/account/16272812/rated/tv`, {
+        params: { 
+            page,
+            language: 'en-US',
+            sort_by: 'created_at.asc'
+        }
+    });
+    return data;
+};
+
+export const getRatedTVEpisodes = async (page: number = 1): Promise<RatedResponse<RatedTVEpisode>> => {
+    const { data } = await axiosInstance.get(`/account/16272812/rated/tv/episodes`, {
+        params: { 
+            page,
+            language: 'en-US',
+            sort_by: 'created_at.asc'
+        }
+    });
+    return data;
+};
+
 export const searchMovies = async (query: string, page: number = 1): Promise<MovieResponse> => {
     const { data } = await axiosInstance.get("/search/movie", {
         params: { query, page },
@@ -93,12 +159,3 @@ export const getSimilarMovies = async (movieId: number, page: number = 1): Promi
     });
     return data;
 };
-
-export const useSearchMovies = (query: string, page: number = 1) => {
-    return useQuery({
-        queryKey: ["searchMovies", query, page],
-        queryFn: () => searchMovies(query, page),
-        enabled: !!query,
-        retry: false,
-    });
-}; 
