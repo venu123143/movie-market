@@ -1,5 +1,5 @@
 import { useState, useMemo } from "react";
-import { usePopularMovies, useMoviesByGenre } from "@/hooks/useMovies";
+import { usePopularMovies, useMoviesByGenre, useSearchMovies } from "@/hooks/useMovies";
 import { useMovieStore } from "@/store/movieStore";
 
 import { GenreFilter } from "@/components/GenreFilter";
@@ -11,14 +11,20 @@ const Home = () => {
     const { searchQuery } = useMovieStore();
 
     const {
+        data: searchData,
+        fetchNextPage: fetchNextSearch,
+        hasNextPage: hasNextSearch,
+        isFetchingNextPage: isFetchingNextSearch,
+        isLoading: isLoadingSearch,
+    } = useSearchMovies(searchQuery);
+
+    const {
         data: popularData,
         fetchNextPage: fetchNextPopular,
         hasNextPage: hasNextPopular,
         isFetchingNextPage: isFetchingNextPopular,
         isLoading: isLoadingPopular,
     } = usePopularMovies(!searchQuery && !selectedGenre);
-
-
 
     const {
         data: genreData,
@@ -29,6 +35,15 @@ const Home = () => {
     } = useMoviesByGenre(selectedGenre);
 
     const { movies, fetchNextPage, hasNextPage, isFetchingNextPage } = useMemo(() => {
+        if (searchQuery) {
+            return {
+                movies: searchData?.pages.flatMap((page) => page.results) ?? [],
+                fetchNextPage: fetchNextSearch,
+                hasNextPage: hasNextSearch,
+                isFetchingNextPage: isFetchingNextSearch,
+            };
+        }
+
         if (selectedGenre) {
             return {
                 movies: genreData?.pages.flatMap((page) => page.results) ?? [],
@@ -44,9 +59,9 @@ const Home = () => {
             hasNextPage: hasNextPopular,
             isFetchingNextPage: isFetchingNextPopular,
         };
-    }, [selectedGenre, popularData, genreData]);
+    }, [searchQuery, selectedGenre, searchData, popularData, genreData]);
 
-    const isLoading = isLoadingPopular || isLoadingGenre;
+    const isLoading = isLoadingSearch || isLoadingPopular || isLoadingGenre;
 
     if (isLoading) {
         return <div className="p-4">Loading...</div>;
@@ -56,7 +71,7 @@ const Home = () => {
         <div className="p-4 space-y-6">
             <div className="flex flex-col space-y-4">
                 <h1 className="text-2xl font-bold">
-                    {selectedGenre ? "Movies by Genre" : "Popular Movies"}
+                    {searchQuery ? "Search Results" : selectedGenre ? "Movies by Genre" : "Popular Movies"}
                 </h1>
                 <div className="flex flex-col md:flex-row gap-4">
                     <GenreFilter

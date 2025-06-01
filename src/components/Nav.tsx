@@ -1,6 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import { Heart, Search } from "lucide-react";
 import { useSearchMovies } from "@/hooks/useMovies";
+import Logo from "@/assets/logo2.png";
 import { useEffect, useState } from "react";
 import { Button } from "./ui/button";
 import {
@@ -40,8 +41,9 @@ export const Nav = () => {
             <nav className="bg-white shadow-sm sticky top-0 z-50">
                 <div className="container mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex items-center justify-between h-16">
-                        <Link to="/" className="text-xl font-bold text-gray-900">
-                            Movie Market
+                        <Link to="/" className="text-xl font-bold text-gray-900 h-full inline ">
+                            <img src={Logo} alt="logo image" className="h-full inline-block" />
+                            <span > Movie Market</span>
                         </Link>
                         <div className="flex items-center gap-4">
                             <Button
