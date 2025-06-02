@@ -1,10 +1,12 @@
 import { useEffect } from "react";
 import { useInView } from "react-intersection-observer";
-import type { Movie } from "@/services/api";
+import type { Movie, RatedTV, RatedTVEpisode } from "@/services/api";
 import { MovieCard } from "./MovieCard";
 
+type ContentItem = Movie | RatedTV | RatedTVEpisode;
+
 interface MovieGridProps {
-    movies: Movie[];
+    movies: ContentItem[];
     hasNextPage: boolean;
     fetchNextPage: () => void;
     isFetchingNextPage: boolean;
@@ -19,6 +21,7 @@ export const MovieGrid = ({ movies, gridColumns, hasNextPage, fetchNextPage, isF
         4: "grid-cols-2 sm:grid-cols-3 md:grid-cols-4",
         5: "grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5"
     }
+
     useEffect(() => {
         if (inView && hasNextPage && !isFetchingNextPage) {
             fetchNextPage();
@@ -26,14 +29,14 @@ export const MovieGrid = ({ movies, gridColumns, hasNextPage, fetchNextPage, isF
     }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage]);
 
     if (!movies.length) {
-        return <div className="text-center text-gray-500">No movies found.</div>;
+        return <div className="text-center text-gray-500">No content found.</div>;
     }
 
     return (
         <div className="space-y-4">
             <div className={`grid ${colGrid[gridColumns]} gap-4`}>
-                {movies.map((movie) => (
-                    <MovieCard key={movie.id} movie={movie} />
+                {movies.map((item) => (
+                    <MovieCard key={item.id} movie={item} />
                 ))}
             </div>
             {hasNextPage && (
