@@ -11,4 +11,12 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  server: {
+    // For dev server
+    allowedHosts: ['moviemarket.nerchuko.in']
+  },
+  preview: {
+    // For vite preview command
+    allowedHosts: ['moviemarket.nerchuko.in']
+  }
 })
