@@ -1,12 +1,20 @@
-import { useState } from "react";
+import { useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { useMovieStore } from "@/store/movieStore";
 import { MovieGrid } from "@/components/MovieGrid";
 import { Button } from "@/components/ui/button";
 import { Heart, BookmarkPlus } from "lucide-react";
 
 const MyLists = () => {
-    const [activeTab, setActiveTab] = useState<"favorites" | "watchlist">("favorites");
+    const { tab = "favorites" } = useParams();
+    const navigate = useNavigate();
     const { favorites, watchlist } = useMovieStore();
+
+    useEffect(() => {
+        if (tab !== "favorites" && tab !== "watchlist") {
+            navigate("/my-lists/favorites", { replace: true });
+        }
+    }, [tab, navigate]);
 
     return (
         <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
@@ -14,25 +22,25 @@ const MyLists = () => {
                 <div className="flex justify-center gap-4 mb-8">
                     <Button
                         size="lg"
-                        variant={activeTab === "favorites" ? "default" : "outline"}
-                        onClick={() => setActiveTab("favorites")}
+                        variant={tab === "favorites" ? "default" : "outline"}
+                        onClick={() => navigate("/my-lists/favorites")}
                         className="gap-2"
                     >
-                        <Heart className={activeTab === "favorites" ? "fill-current" : ""} />
+                        <Heart className={tab === "favorites" ? "fill-current" : ""} />
                         Favorites
                     </Button>
                     <Button
                         size="lg"
-                        variant={activeTab === "watchlist" ? "default" : "outline"}
-                        onClick={() => setActiveTab("watchlist")}
+                        variant={tab === "watchlist" ? "default" : "outline"}
+                        onClick={() => navigate("/my-lists/watchlist")}
                         className="gap-2"
                     >
-                        <BookmarkPlus className={activeTab === "watchlist" ? "fill-current" : ""} />
+                        <BookmarkPlus className={tab === "watchlist" ? "fill-current" : ""} />
                         Watchlist
                     </Button>
                 </div>
 
-                {activeTab === "favorites" ? (
+                {tab === "favorites" ? (
                     favorites.length > 0 ? (
                         <MovieGrid
                             gridColumns={5}
