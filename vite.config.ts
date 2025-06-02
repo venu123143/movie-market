@@ -20,7 +20,8 @@ export default defineConfig({
     allowedHosts: [
       'moviemarket.nerchuko.in',
       'localhost',
-      '127.0.0.1'
+      '127.0.0.1',
+      '168.119.56.55'
     ]
   }
 })
