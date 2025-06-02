@@ -8,11 +8,17 @@ interface MovieGridProps {
     hasNextPage: boolean;
     fetchNextPage: () => void;
     isFetchingNextPage: boolean;
+    gridColumns: 2 | 3 | 4 | 5;
 }
 
-export const MovieGrid = ({ movies, hasNextPage, fetchNextPage, isFetchingNextPage }: MovieGridProps) => {
+export const MovieGrid = ({ movies, gridColumns, hasNextPage, fetchNextPage, isFetchingNextPage }: MovieGridProps) => {
     const { ref, inView } = useInView();
-
+    const colGrid: Record<2 | 3 | 4 | 5, string> = {
+        2: "grid-cols-2",
+        3: "grid-cols-2 sm:grid-cols-3",
+        4: "grid-cols-2 sm:grid-cols-3 md:grid-cols-4",
+        5: "grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5"
+    }
     useEffect(() => {
         if (inView && hasNextPage && !isFetchingNextPage) {
             fetchNextPage();
@@ -25,7 +31,7 @@ export const MovieGrid = ({ movies, hasNextPage, fetchNextPage, isFetchingNextPa
 
     return (
         <div className="space-y-4">
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+            <div className={`grid ${colGrid[gridColumns]} gap-4`}>
                 {movies.map((movie) => (
                     <MovieCard key={movie.id} movie={movie} />
                 ))}

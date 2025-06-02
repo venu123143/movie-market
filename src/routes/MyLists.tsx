@@ -35,9 +35,10 @@ const MyLists = () => {
                 {activeTab === "favorites" ? (
                     favorites.length > 0 ? (
                         <MovieGrid
+                            gridColumns={5}
                             movies={favorites}
                             hasNextPage={false}
-                            fetchNextPage={() => {}}
+                            fetchNextPage={() => { }}
                             isFetchingNextPage={false}
                         />
                     ) : (
@@ -48,9 +49,10 @@ const MyLists = () => {
                     )
                 ) : watchlist.length > 0 ? (
                     <MovieGrid
+                        gridColumns={5}
                         movies={watchlist}
                         hasNextPage={false}
-                        fetchNextPage={() => {}}
+                        fetchNextPage={() => { }}
                         isFetchingNextPage={false}
                     />
                 ) : (

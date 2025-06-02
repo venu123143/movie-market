@@ -98,6 +98,7 @@ const MovieDetails = () => {
                                 hasNextPage={hasNextPage}
                                 fetchNextPage={fetchNextPage}
                                 isFetchingNextPage={isFetchingNextPage}
+                                gridColumns={3}
                             />
                         </section>
                     </div>

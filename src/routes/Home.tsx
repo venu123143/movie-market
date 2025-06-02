@@ -4,6 +4,7 @@ import { useMovieStore } from "@/store/movieStore";
 
 import { GenreFilter } from "@/components/GenreFilter";
 import { MovieGrid } from "@/components/MovieGrid";
+import { LoadingSpinner } from "@/components/LoadingSpinner";
 
 const Home = () => {
 
@@ -64,7 +65,7 @@ const Home = () => {
     const isLoading = isLoadingSearch || isLoadingPopular || isLoadingGenre;
 
     if (isLoading) {
-        return <div className="p-4">Loading...</div>;
+        return <LoadingSpinner />;
     }
 
     return (
@@ -85,6 +86,7 @@ const Home = () => {
                 hasNextPage={hasNextPage}
                 fetchNextPage={fetchNextPage}
                 isFetchingNextPage={isFetchingNextPage}
+                gridColumns={5}
             />
         </div>
     );
