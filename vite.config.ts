@@ -3,7 +3,6 @@ import react from '@vitejs/plugin-react-swc'
 import path from "path"
 import tailwindcss from "@tailwindcss/vite"
 
-// https://vite.dev/config/
 export default defineConfig({
   plugins: [react(), tailwindcss()],
   resolve: {
@@ -11,10 +10,14 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
-  server: {
-    allowedHosts: true
-  },
   preview: {
-    allowedHosts: ['moviemarket.nerchuko.in', 'localhost']
+    host: '0.0.0.0', // Ensure the server listens on all interfaces
+    port: 4173,
+    strictPort: true,
+    allowedHosts: [
+      'moviemarket.nerchuko.in',
+      'localhost',
+      '127.0.0.1'
+    ]
   }
 })
