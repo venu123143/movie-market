@@ -1,9 +1,10 @@
 import { Link, useNavigate } from "react-router-dom";
-import { Heart, Search } from "lucide-react";
+import { Heart, Search, LogOut, LogIn } from "lucide-react";
 import { useSearchMovies } from "@/hooks/useMovies";
 import Logo from "@/assets/logo2.png";
 import { useEffect, useState } from "react";
 import { Button } from "./ui/button";
+import { useAuth } from "@/hooks/useAuth";
 import {
     CommandDialog,
     CommandEmpty,
@@ -17,6 +18,7 @@ export const Nav = () => {
     const [open, setOpen] = useState(false);
     const [search, setSearch] = useState("");
     const navigate = useNavigate();
+    const { isAuthenticated, logout, startAuth } = useAuth();
 
     const { data: searchResults } = useSearchMovies(open ? search : "");
 
@@ -34,6 +36,11 @@ export const Nav = () => {
     const handleSelect = (movieId: number) => {
         setOpen(false);
         navigate(`/movie/${movieId}`);
+    };
+
+    const handleLogout = async () => {
+        await logout();
+        navigate("/");
     };
 
     return (
@@ -64,6 +71,27 @@ export const Nav = () => {
                                 <Heart className="w-5 h-5" />
                                 <span className="hidden sm:inline">My Lists</span>
                             </Link>
+                            {isAuthenticated ? (
+                                <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    onClick={handleLogout}
+                                    className="text-gray-600 hover:text-gray-900"
+                                    title="Logout"
+                                >
+                                    <LogOut className="w-5 h-5" />
+                                </Button>
+                            ) : (
+                                <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    onClick={startAuth}
+                                    className="text-gray-600 hover:text-gray-900"
+                                    title="Login"
+                                >
+                                    <LogIn className="w-5 h-5" />
+                                </Button>
+                            )}
                         </div>
                     </div>
                 </div>

@@ -2,7 +2,11 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Card } from "@/components/ui/card";
 import { useContentDetails } from "@/hooks/useContentDetails";
+import { useLists } from "@/hooks/useLists";
+import { useAuth } from "@/hooks/useAuth";
 import type { Movie, RatedTV, RatedTVEpisode } from "@/services/api";
+import { Heart, BookmarkPlus } from "lucide-react";
+import { Button } from "./ui/button";
 
 const IMAGE_BASE_URL = "https://image.tmdb.org/t/p/w500";
 
@@ -15,6 +19,8 @@ interface MovieCardProps {
 export const MovieCard = ({ movie }: MovieCardProps) => {
     const navigate = useNavigate();
     const [isHovered, setIsHovered] = useState(false);
+    const { isAuthenticated } = useAuth();
+    const { addToFavorites, addToWatchlist } = useLists();
 
     const contentType = 'title' in movie ? 'movie' : 'episode_number' in movie ? 'episode' : 'tv';
     const { data: contentDetails, isLoading: loadingDetails } = useContentDetails(
@@ -35,6 +41,20 @@ export const MovieCard = ({ movie }: MovieCardProps) => {
         ? movie.vote_average
         : movie.rating;
 
+    const handleFavorite = (e: React.MouseEvent) => {
+        e.stopPropagation();
+        if (!isAuthenticated) return;
+        // TODO: Check if already in favorites
+        addToFavorites({ mediaId: movie.id, mediaType: contentType === 'episode' ? 'tv' : contentType });
+    };
+
+    const handleWatchlist = (e: React.MouseEvent) => {
+        e.stopPropagation();
+        if (!isAuthenticated) return;
+        // TODO: Check if already in watchlist
+        addToWatchlist({ mediaId: movie.id, mediaType: contentType === 'episode' ? 'tv' : contentType });
+    };
+
     return (
         <div
             className="relative"
@@ -52,9 +72,33 @@ export const MovieCard = ({ movie }: MovieCardProps) => {
                         className="w-full h-full object-cover"
                     />
                     {isHovered && (
-                        <div className="absolute inset-0 bg-black bg-opacity-50 p-4 flex flex-col justify-end">
-                            <h3 className="text-white font-semibold">{title}</h3>
-                            <p className="text-gray-300 text-sm">{releaseDate}</p>
+                        <div className="absolute inset-0 bg-black bg-opacity-50 p-4 flex flex-col justify-between">
+                            <div className="flex justify-end gap-2">
+                                {isAuthenticated && (
+                                    <>
+                                        <Button
+                                            variant="ghost"
+                                            size="icon"
+                                            className="h-8 w-8 bg-white/20 hover:bg-white/30"
+                                            onClick={handleFavorite}
+                                        >
+                                            <Heart className="h-4 w-4 text-white" />
+                                        </Button>
+                                        <Button
+                                            variant="ghost"
+                                            size="icon"
+                                            className="h-8 w-8 bg-white/20 hover:bg-white/30"
+                                            onClick={handleWatchlist}
+                                        >
+                                            <BookmarkPlus className="h-4 w-4 text-white" />
+                                        </Button>
+                                    </>
+                                )}
+                            </div>
+                            <div>
+                                <h3 className="text-white font-semibold">{title}</h3>
+                                <p className="text-gray-300 text-sm">{releaseDate}</p>
+                            </div>
                         </div>
                     )}
                 </div>

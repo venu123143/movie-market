@@ -2,6 +2,7 @@ import axios from "axios";
 
 const API_KEY = import.meta.env.VITE_TMDB_API_KEY;
 const BASE_URL = "https://api.themoviedb.org/3";
+
 export interface Movie {
     id: number;
     title: string;
@@ -42,13 +43,23 @@ export interface MovieDetails extends Movie {
     production_companies: ProductionCompany[];
 }
 
+interface RequestTokenResponse {
+    success: boolean;
+    expires_at: string;
+    request_token: string;
+}
+
+interface SessionResponse {
+    success: boolean;
+    session_id: string;
+}
+
 const axiosInstance = axios.create({
     baseURL: BASE_URL,
     headers: {
         Authorization: `Bearer ${API_KEY}`,
         accept: "application/json",
     }
-
 });
 
 export const getPopularMovies = async (page: number = 1): Promise<MovieResponse> => {
@@ -98,33 +109,39 @@ export interface RatedResponse<T> {
 }
 
 export const getRatedMovies = async (page: number = 1): Promise<RatedResponse<RatedMovie>> => {
+    const sessionId = localStorage.getItem("tmdb_session_id");
     const { data } = await axiosInstance.get(`/account/16272812/rated/movies`, {
         params: { 
             page,
             language: 'en-US',
-            sort_by: 'created_at.asc'
+            sort_by: 'created_at.asc',
+            session_id: sessionId
         }
     });
     return data;
 };
 
 export const getRatedTVShows = async (page: number = 1): Promise<RatedResponse<RatedTV>> => {
+    const sessionId = localStorage.getItem("tmdb_session_id");
     const { data } = await axiosInstance.get(`/account/16272812/rated/tv`, {
         params: { 
             page,
             language: 'en-US',
-            sort_by: 'created_at.asc'
+            sort_by: 'created_at.asc',
+            session_id: sessionId
         }
     });
     return data;
 };
 
 export const getRatedTVEpisodes = async (page: number = 1): Promise<RatedResponse<RatedTVEpisode>> => {
+    const sessionId = localStorage.getItem("tmdb_session_id");
     const { data } = await axiosInstance.get(`/account/16272812/rated/tv/episodes`, {
         params: { 
             page,
             language: 'en-US',
-            sort_by: 'created_at.asc'
+            sort_by: 'created_at.asc',
+            session_id: sessionId
         }
     });
     return data;
@@ -156,6 +173,102 @@ export const getMoviesByGenre = async (genreId: number, page: number = 1): Promi
 export const getSimilarMovies = async (movieId: number, page: number = 1): Promise<MovieResponse> => {
     const { data } = await axiosInstance.get(`/movie/${movieId}/similar`, {
         params: { page },
+    });
+    return data;
+};
+
+export const getRequestToken = async (): Promise<RequestTokenResponse> => {
+    const { data } = await axiosInstance.get("/authentication/token/new");
+    return data;
+};
+
+export const createSession = async (requestToken: string): Promise<SessionResponse> => {
+    const { data } = await axiosInstance.post("/authentication/session/new", {
+        request_token: requestToken
+    });
+    return data;
+};
+
+export const deleteSession = async (): Promise<{ success: boolean }> => {
+    const sessionId = localStorage.getItem('tmdb_session_id');
+    const { data } = await axiosInstance.delete("/authentication/session", {
+        data: { session_id: sessionId }
+    });
+    return data;
+};
+
+export const addToFavorites = async (mediaId: number, mediaType: 'movie' | 'tv'): Promise<{ success: boolean }> => {
+    const sessionId = localStorage.getItem('tmdb_session_id');
+    const { data } = await axiosInstance.post(`/account/16272812/favorite`, {
+        media_type: mediaType,
+        media_id: mediaId,
+        favorite: true
+    }, {
+        params: { session_id: sessionId }
+    });
+    return data;
+};
+
+export const removeFromFavorites = async (mediaId: number, mediaType: 'movie' | 'tv'): Promise<{ success: boolean }> => {
+    const sessionId = localStorage.getItem('tmdb_session_id');
+    const { data } = await axiosInstance.post(`/account/16272812/favorite`, {
+        media_type: mediaType,
+        media_id: mediaId,
+        favorite: false
+    }, {
+        params: { session_id: sessionId }
+    });
+    return data;
+};
+
+export const addToWatchlist = async (mediaId: number, mediaType: 'movie' | 'tv'): Promise<{ success: boolean }> => {
+    const sessionId = localStorage.getItem('tmdb_session_id');
+    const { data } = await axiosInstance.post(`/account/16272812/watchlist`, {
+        media_type: mediaType,
+        media_id: mediaId,
+        watchlist: true
+    }, {
+        params: { session_id: sessionId }
+    });
+    return data;
+};
+
+export const removeFromWatchlist = async (mediaId: number, mediaType: 'movie' | 'tv'): Promise<{ success: boolean }> => {
+    const sessionId = localStorage.getItem('tmdb_session_id');
+    const { data } = await axiosInstance.post(`/account/16272812/watchlist`, {
+        media_type: mediaType,
+        media_id: mediaId,
+        watchlist: false
+    }, {
+        params: { session_id: sessionId }
+    });
+    return data;
+};
+
+export const getFavorites = async () => {
+    const sessionId = localStorage.getItem('tmdb_session_id');
+    if (!sessionId) throw new Error('No session ID found');
+
+    const { data } = await axiosInstance.get(`/account/16272812/favorite/movies`, {
+        params: { 
+            session_id: sessionId,
+            language: 'en-US',
+            sort_by: 'created_at.asc'
+        }
+    });
+    return data;
+};
+
+export const getWatchlist = async () => {
+    const sessionId = localStorage.getItem('tmdb_session_id');
+    if (!sessionId) throw new Error('No session ID found');
+
+    const { data } = await axiosInstance.get(`/account/16272812/watchlist/movies`, {
+        params: { 
+            session_id: sessionId,
+            language: 'en-US',
+            sort_by: 'created_at.asc'
+        }
     });
     return data;
 };

@@ -1,19 +1,30 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { usePopularMovies, useMoviesByGenre, useSearchMovies } from "@/hooks/useMovies";
 import { useRatedTVShows, useRatedEpisodes } from "@/hooks/useRatedContent";
 import { useMovieStore } from "@/store/movieStore";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { GenreFilter } from "@/components/GenreFilter";
 import { MovieGrid } from "@/components/MovieGrid";
 import { LoadingSpinner } from "@/components/LoadingSpinner";
 import { Button } from "@/components/ui/button";
-import { Film, Tv, ListVideo } from "lucide-react";
+import { Film, Tv, ListVideo, LogIn } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
 
 const Home = () => {
     const { tab = "movies" } = useParams();
     const navigate = useNavigate();
+    const [searchParams] = useSearchParams();
     const [selectedGenre, setSelectedGenre] = useState<number | null>(null);
     const { searchQuery } = useMovieStore();
+    const { isAuthenticated, startAuth, completeAuth } = useAuth();
+
+    // Handle authentication callback
+    useEffect(() => {
+        const approved = searchParams.get('approved');
+        if (approved === 'true') {
+            completeAuth();
+        }
+    }, [searchParams, completeAuth]);
 
     // Movies data
     const {
@@ -119,6 +130,19 @@ const Home = () => {
 
     if (isLoading) {
         return <LoadingSpinner />;
+    }
+
+    if ((tab === "tv" || tab === "episodes") && !isAuthenticated) {
+        return (
+            <div className="flex flex-col items-center justify-center min-h-[60vh] space-y-4">
+                <h2 className="text-xl font-semibold">Authentication Required</h2>
+                <p className="text-gray-600">Please log in to view your rated content.</p>
+                <Button onClick={startAuth} className="gap-2">
+                    <LogIn className="w-4 h-4" />
+                    Log in with TMDB
+                </Button>
+            </div>
+        );
     }
 
     return (

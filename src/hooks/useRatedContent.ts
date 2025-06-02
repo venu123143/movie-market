@@ -1,7 +1,10 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
-import { getRatedTVShows, getRatedTVEpisodes, type RatedResponse, type RatedTV, type RatedTVEpisode } from "@/services/api";
+import { getRatedTVShows, getRatedTVEpisodes } from "@/services/api";
+import { useAuth } from "./useAuth";
 
 export const useRatedTVShows = () => {
+    const { isAuthenticated } = useAuth();
+
     return useInfiniteQuery({
         queryKey: ["ratedTVShows"],
         queryFn: ({ pageParam }) => getRatedTVShows(pageParam),
@@ -12,10 +15,13 @@ export const useRatedTVShows = () => {
             }
             return undefined;
         },
+        enabled: isAuthenticated,
     });
 };
 
 export const useRatedEpisodes = () => {
+    const { isAuthenticated } = useAuth();
+
     return useInfiniteQuery({
         queryKey: ["ratedEpisodes"],
         queryFn: ({ pageParam }) => getRatedTVEpisodes(pageParam),
@@ -26,5 +32,6 @@ export const useRatedEpisodes = () => {
             }
             return undefined;
         },
+        enabled: isAuthenticated,
     });
 }; 

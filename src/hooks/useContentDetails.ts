@@ -1,6 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
 import { getMovieDetails, getRatedTVShows, getRatedTVEpisodes } from "@/services/api";
-import type { MovieDetails, RatedTV, RatedTVEpisode } from "@/services/api";
 
 export const useContentDetails = (id: number | null, type: 'movie' | 'tv' | 'episode') => {
     return useQuery({
