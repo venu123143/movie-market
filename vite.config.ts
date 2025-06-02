@@ -12,11 +12,9 @@ export default defineConfig({
     },
   },
   server: {
-    // For dev server
-    allowedHosts: ['moviemarket.nerchuko.in']
+    allowedHosts: true
   },
   preview: {
-    // For vite preview command
-    allowedHosts: ['moviemarket.nerchuko.in']
+    allowedHosts: true
   }
 })
