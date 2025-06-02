@@ -10,6 +10,9 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  build: {
+    outDir: 'dist'  // This is default, just be explicit
+  },
   preview: {
     host: '0.0.0.0', // Ensure the server listens on all interfaces
     port: 4173,
