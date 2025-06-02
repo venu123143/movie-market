@@ -4,7 +4,7 @@ FROM oven/bun:1 AS builder
 WORKDIR /app
 
 # Copy files and install deps
-COPY bun.lock package.json ./
+COPY package.json bun.lockb ./
 RUN bun install --frozen-lockfile
 
 # Copy app source and build
@@ -15,13 +15,16 @@ RUN bun run build
 FROM nginx:alpine
 
 # Remove default nginx config
-RUN rm /etc/nginx/conf.d/default.conf
+RUN rm -rf /etc/nginx/conf.d/*
 
 # Add custom nginx config
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+COPY --chown=nginx:nginx nginx.conf /etc/nginx/conf.d/default.conf
 
 # Copy built static files from builder
-COPY --from=builder /app/dist /usr/share/nginx/html
+COPY --from=builder --chown=nginx:nginx /app/dist /usr/share/nginx/html
+
+# Set permissions
+RUN chmod -R 755 /usr/share/nginx/html
 
 EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]
