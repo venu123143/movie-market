@@ -8,6 +8,7 @@ import MovieDetails from "./routes/MovieDetails";
 import MyLists from "./routes/MyLists";
 import { Nav } from "@/components/Nav";
 
+// docker run -p 4173:4173 -e VITE_TMDB_API_KEY=your_api_key movie-market-frontend
 const App = () => (
   <TooltipProvider>
     <Toaster />

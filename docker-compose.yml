@@ -1,0 +1,21 @@
+version: '3.8'
+
+services:
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "4173:4173"
+    environment:
+      - VITE_TMDB_API_KEY=${VITE_TMDB_API_KEY}
+    volumes:
+      - ./src:/app/src
+      - ./public:/app/public
+    restart: unless-stopped
+    networks:
+      - movie-market-network
+
+networks:
+  movie-market-network:
+    driver: bridge 
