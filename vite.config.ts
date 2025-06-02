@@ -15,6 +15,6 @@ export default defineConfig({
     allowedHosts: true
   },
   preview: {
-    allowedHosts: true
+    allowedHosts: ['moviemarket.nerchuko.in', 'localhost']
   }
 })
