@@ -43,6 +43,10 @@ export const Nav = () => {
         navigate("/");
     };
 
+    const goToLogin = () => {
+        navigate("/login");
+    };
+
     return (
         <>
             <nav className="bg-white shadow-sm sticky top-0 z-50">
@@ -92,6 +96,16 @@ export const Nav = () => {
                                     <LogIn className="w-5 h-5" />
                                 </Button>
                             )}
+                            <Button
+                                variant="outline"
+                                size="default"
+                                onClick={goToLogin}
+                                className="text-gray-600 hover:text-gray-900"
+                                title="Logout"
+                            >
+                                <LogOut className="w-5 h-5" />
+                                <span>Login</span>
+                            </Button>
                         </div>
                     </div>
                 </div>
