@@ -111,7 +111,7 @@ export interface RatedResponse<T> {
 export const getRatedMovies = async (page: number = 1): Promise<RatedResponse<RatedMovie>> => {
     const sessionId = localStorage.getItem("tmdb_session_id");
     const { data } = await axiosInstance.get(`/account/16272812/rated/movies`, {
-        params: { 
+        params: {
             page,
             language: 'en-US',
             sort_by: 'created_at.asc',
@@ -124,7 +124,7 @@ export const getRatedMovies = async (page: number = 1): Promise<RatedResponse<Ra
 export const getRatedTVShows = async (page: number = 1): Promise<RatedResponse<RatedTV>> => {
     const sessionId = localStorage.getItem("tmdb_session_id");
     const { data } = await axiosInstance.get(`/account/16272812/rated/tv`, {
-        params: { 
+        params: {
             page,
             language: 'en-US',
             sort_by: 'created_at.asc',
@@ -137,7 +137,7 @@ export const getRatedTVShows = async (page: number = 1): Promise<RatedResponse<R
 export const getRatedTVEpisodes = async (page: number = 1): Promise<RatedResponse<RatedTVEpisode>> => {
     const sessionId = localStorage.getItem("tmdb_session_id");
     const { data } = await axiosInstance.get(`/account/16272812/rated/tv/episodes`, {
-        params: { 
+        params: {
             page,
             language: 'en-US',
             sort_by: 'created_at.asc',
@@ -161,7 +161,7 @@ export const getGenres = async (): Promise<{ genres: Genre[] }> => {
 
 export const getMoviesByGenre = async (genreId: number, page: number = 1): Promise<MovieResponse> => {
     const { data } = await axiosInstance.get("/discover/movie", {
-        params: { 
+        params: {
             with_genres: genreId,
             page,
             sort_by: "popularity.desc"
@@ -250,7 +250,7 @@ export const getFavorites = async () => {
     if (!sessionId) throw new Error('No session ID found');
 
     const { data } = await axiosInstance.get(`/account/16272812/favorite/movies`, {
-        params: { 
+        params: {
             session_id: sessionId,
             language: 'en-US',
             sort_by: 'created_at.asc'
@@ -264,7 +264,7 @@ export const getWatchlist = async () => {
     if (!sessionId) throw new Error('No session ID found');
 
     const { data } = await axiosInstance.get(`/account/16272812/watchlist/movies`, {
-        params: { 
+        params: {
             session_id: sessionId,
             language: 'en-US',
             sort_by: 'created_at.asc'
