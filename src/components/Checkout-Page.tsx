@@ -166,7 +166,7 @@ export default function CheckoutPage() {
 
     const onSubmit = async (data: CheckoutFormData) => {
         try {
-            console.log("calling....")
+            console.log("calling....", data)
             setIsSubmitting(true)
             // Simulate API call
             const payload = {
