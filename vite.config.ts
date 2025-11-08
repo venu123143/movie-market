@@ -12,12 +12,11 @@ export default defineConfig({
     },
   },
   build: {
-    outDir: 'dist', // Explicit output directory
+    outDir: 'dist',
   },
   preview: {
-    host: '0.0.0.0', // Allow access from external networks
+    host: true, // This disables host check - simpler than allowedHosts
     port: 4173,
     strictPort: true,
-    allowedHosts: ['*'],
   },
 })

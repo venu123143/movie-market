@@ -1,15 +1,30 @@
-# Stage 1 — builder
+# Use the official Bun image
 FROM oven/bun:1 AS builder
+
 WORKDIR /app
+
+# Copy package files
 COPY package.json bun.lock ./
+
+# Install dependencies
 RUN bun install --frozen-lockfile
+
+# Copy the rest of the application
 COPY . .
+
+# Build the application
 RUN bun run build
 
-# Stage 2 — nginx static server
-FROM nginx:alpine AS production
-COPY --from=builder /app/dist /usr/share/nginx/html
-# Optional: custom nginx config for SPA (history pushState)
-COPY ./nginx.conf /etc/nginx/conf.d/default.conf
-EXPOSE 80
-CMD ["nginx", "-g", "daemon off;"]
+# Production stage
+FROM oven/bun:1-slim
+
+WORKDIR /app
+
+COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/package.json ./
+
+RUN bun install --production
+
+EXPOSE 4173
+
+CMD ["bun", "run", "preview", "--host", "0.0.0.0"]
