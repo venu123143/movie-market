@@ -7,8 +7,10 @@ import { GenreFilter } from "@/components/GenreFilter";
 import { MovieGrid } from "@/components/MovieGrid";
 import { LoadingSpinner } from "@/components/LoadingSpinner";
 import { Button } from "@/components/ui/button";
-import { Film, Tv, ListVideo, LogIn } from "lucide-react";
+import { Film, Tv, ListVideo, LogIn, X } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
+import PaymentSuccess from "./PaymentSuccess";
+import PaymentFailed from "./PaymentFailed";
 
 const Home = () => {
     const { tab = "movies" } = useParams();
@@ -176,17 +178,40 @@ const Home = () => {
                         <ListVideo className={tab === "episodes" ? "fill-current" : ""} />
                         Episodes
                     </Button>
+                    <Button
+                        size="lg"
+                        variant={tab === "success" ? "default" : "outline"}
+                        onClick={() => navigate("/success")}
+                        className="gap-2"
+                    >
+                        <ListVideo className={tab === "success" ? "fill-current" : ""} />
+                        Success
+                    </Button>
+                    <Button
+                        size="lg"
+                        variant={tab === "failure" ? "default" : "outline"}
+                        onClick={() => navigate("/failure")}
+                        className="gap-2"
+                    >
+                        <X className={tab === "failure" ? "fill-current" : ""} />
+                        failure
+                    </Button>
                 </div>
                 <h1 className="text-2xl font-bold">
-                    {searchQuery 
-                        ? "Search Results" 
-                        : selectedGenre 
-                            ? "Movies by Genre" 
-                            : tab === "tv" 
-                                ? "TV Shows" 
-                                : tab === "episodes" 
-                                    ? "Episodes" 
-                                    : "Popular Movies"}
+                    {tab === "success"
+                        ? "Payment success"
+                        : tab === "failure"
+                            ? "Payment failure"
+                            : searchQuery
+                                ? "Search Results"
+                                : selectedGenre
+                                    ? "Movies by Genre"
+                                    : tab === "tv"
+                                        ? "TV Shows"
+                                        : tab === "episodes"
+                                            ? "Episodes"
+                                            : "Popular Movies"
+                    }
                 </h1>
                 {tab === "movies" && (
                     <div className="flex flex-col md:flex-row gap-4">
@@ -194,6 +219,16 @@ const Home = () => {
                             selectedGenre={selectedGenre}
                             onSelectGenre={setSelectedGenre}
                         />
+                    </div>
+                )}
+                {tab === "success" && (
+                    <div className="flex flex-col md:flex-row gap-4">
+                        <PaymentSuccess />
+                    </div>
+                )}
+                {tab === "failure" && (
+                    <div className="flex flex-col md:flex-row gap-4">
+                        <PaymentFailed />
                     </div>
                 )}
             </div>
