@@ -11,7 +11,7 @@ import { ThemeProvider } from "./hooks/useTheme";
 import { LoginPage } from "./routes/Login";
 import { AuthSuccess } from "./routes/AuthSuccess";
 import { AuthError } from "./routes/AuthError";
-
+import RidewaveFlow from "./routes/RidewaveFlow";
 // docker run -p 4173:4173 -e VITE_TMDB_API_KEY=your_api_key movie-market-frontend
 // # in your frontend repo folder:
 // docker build -t venugopal143/movie-market-frontend:latest .
@@ -27,6 +27,7 @@ const App = () => (
         <Nav />
         <Routes>
           <Route path="/login" element={<LoginPage />} />
+          <Route path="/ridewave/flow" element={<RidewaveFlow />} />
           <Route path="/auth/success" element={<AuthSuccess />} />
           <Route path="/auth/error" element={<AuthError />} />
           <Route path="/" element={<Home />} />

@@ -10,6 +10,7 @@ import LoginImg from "@/assets/3d-loginimg.png"
 import GoogleIcon from "@/assets/GOOGLE_ICON.png"
 
 
+
 export function LoginPage() {
     const [isLoading, setIsLoading] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
@@ -27,7 +28,7 @@ export function LoginPage() {
     const handleEmailLogin = async (e: React.FormEvent) => {
         e.preventDefault();
         setIsLoading(true);
-
+ 
         // Simulate email login
         try {
             await new Promise(resolve => setTimeout(resolve, 1500));
