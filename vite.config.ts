@@ -1,27 +1,28 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react-swc'
-import path from "path"
-import tailwindcss from "@tailwindcss/vite"
+import path from 'path'
+import tailwindcss from '@tailwindcss/vite'
 
+// https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react(), tailwindcss()],
   resolve: {
     alias: {
-      "@": path.resolve(__dirname, "./src"),
+      '@': path.resolve(__dirname, './src'),
     },
   },
   build: {
-    outDir: 'dist'  // This is default, just be explicit
+    outDir: 'dist', // Explicit output directory
   },
   preview: {
-    host: '0.0.0.0', // Ensure the server listens on all interfaces
+    host: '0.0.0.0', // Allow access from external networks
     port: 4173,
     strictPort: true,
     allowedHosts: [
-      'moviemarket.nerchuko.in',
+      'moviemarket.nerchuko.in', // your custom domain
       'localhost',
       '127.0.0.1',
-      '168.119.56.55'
-    ]
-  }
+      '168.119.56.55', // your server’s IP
+    ],
+  },
 })
